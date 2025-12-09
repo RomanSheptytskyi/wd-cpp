@@ -4,6 +4,7 @@
   vars:
     repo_url: "https://github.com/RomanSheptytskyi/wd-cpp"
     project_dir: "/opt/wd-cpp"
+    docker_compose_version: "2.29.7"
 
   tasks:
 
@@ -11,12 +12,12 @@
       apt:
         update_cache: yes
 
-    - name: Install git, docker.io, docker-compose
+    - name: Install required packages
       apt:
         name:
           - git
           - docker.io
-          - docker-compose
+          - curl
         state: present
 
     - name: Enable and start Docker service
@@ -24,6 +25,12 @@
         name: docker
         state: started
         enabled: yes
+
+    - name: Download docker-compose binary
+      get_url:
+        url: "https://github.com/docker/compose/releases/download/v{{ docker_compose_version }}/docker-compose-{{ ansible_system }}-{{ ansible_userspace_architecture }}"
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'
 
     - name: Ensure /opt directory exists
       file:
@@ -38,8 +45,7 @@
         force: yes
 
     - name: Run docker-compose (build + up)
-      shell: |
-        docker-compose up -d --build
+      shell: docker-compose up -d --build
       args:
         chdir: "{{ project_dir }}"
 
