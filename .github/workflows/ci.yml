@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Build and Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04  # аналог твоєї локальної системи
 
     steps:
       - name: Checkout repository
@@ -18,13 +18,25 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential cmake libboost-all-dev g++
+          sudo apt-get install -y \
+            build-essential \
+            cmake=3.22.* \
+            g++-11 \
+            libboost-system1.74-dev \
+            libboost-thread1.74-dev \
+            git
+          
+      - name: Use g++-11
+        run: |
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 100
+          sudo update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-11 100
+          g++ --version
 
       - name: Configure with CMake
         run: |
           mkdir -p build
           cd build
-          cmake .. -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_STANDARD_REQUIRED=ON -Wno-dev
+          cmake .. -Wno-dev
 
       - name: Build server
         run: |
