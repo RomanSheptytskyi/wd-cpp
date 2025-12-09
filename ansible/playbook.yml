@@ -1,0 +1,45 @@
+---
+- hosts: all
+  become: yes
+  vars:
+    repo_url: "https://github.com/RomanSheptytskyi/wd-cpp"
+    project_dir: "/opt/wd-cpp"
+
+  tasks:
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install git, docker.io, docker-compose
+      apt:
+        name:
+          - git
+          - docker.io
+          - docker-compose
+        state: present
+
+    - name: Enable and start Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Ensure /opt directory exists
+      file:
+        path: /opt
+        state: directory
+
+    - name: Clone wd-cpp repository
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ project_dir }}"
+        version: main
+        force: yes
+
+    - name: Run docker-compose (build + up)
+      shell: |
+        docker-compose up -d --build
+      args:
+        chdir: "{{ project_dir }}"
+
