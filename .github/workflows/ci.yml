@@ -1,0 +1,46 @@
+name: C++ CI
+
+# Запускати workflow при пуші в будь-яку гілку
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      # Клонування репозиторію
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Встановлення необхідних пакетів
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake libboost-all-dev
+
+      # Створення директорії для збірки та запуск CMake
+      - name: Configure with CMake
+        run: |
+          mkdir -p build
+          cd build
+          cmake ..
+
+      # Збірка серверного додатку
+      - name: Build server
+        run: |
+          cd build
+          make server
+
+      # Перевірка, чи файл server створено
+      - name: Verify build
+        run: |
+          if [ -f build/server/src/server ]; then
+            echo "Build successful!"
+          else
+            echo "Build failed!" && exit 1
+          fi
