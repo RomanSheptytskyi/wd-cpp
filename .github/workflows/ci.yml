@@ -1,6 +1,5 @@
 name: C++ CI
 
-# Запускати workflow при пуші в будь-яку гілку
 on:
   push:
     branches:
@@ -21,17 +20,14 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential cmake libboost-all-dev
-          
-      - name: Install Boost
-  	run: sudo apt-get install -y libboost-all-dev
+          sudo apt-get install -y build-essential cmake libboost-all-dev g++
 
-      # Створення директорії для збірки та запуск CMake
+      # Створення директорії для збірки та запуск CMake з C++17
       - name: Configure with CMake
         run: |
           mkdir -p build
           cd build
-          cmake ..
+          cmake -DCMAKE_CXX_STANDARD=17 ..
 
       # Збірка серверного додатку
       - name: Build server
@@ -47,3 +43,4 @@ jobs:
           else
             echo "Build failed!" && exit 1
           fi
+
