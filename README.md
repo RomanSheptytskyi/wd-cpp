@@ -73,6 +73,8 @@ to run app you have to once again go into your project directory (it is importan
 ```
 build/server/src/server
 ```
+hellow
+
 There should be printed log information on your command line then you can open web browser and go to the (http://localhost:9876)
 If everythings works fine the browser should render text of "Wirtualny dziekanat 2.0" and the rest of the page.
 
