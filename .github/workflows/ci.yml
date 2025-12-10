@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Build and Test
-    runs-on: ubuntu-22.04  # аналог твоєї локальної системи
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout repository
